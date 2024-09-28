@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	# creating labgrid group if it isn't already there
+	if ! getent group labgrid >/dev/null; then
+            addgroup --system labgrid
+	fi
+
+	# creating labgrid user if it isn't already there
+	if ! getent passwd labgrid >/dev/null; then
+            adduser --system --ingroup labgrid --shell /bin/false \
+                    --no-create-home \
+                    --gecos "Labgrid embedded board control user" \
+                    labgrid
+	fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
